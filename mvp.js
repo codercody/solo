@@ -22,6 +22,9 @@ game.init = function(){
     });
 };
 
+game.fakeTie = false;
+
+
 
 game.hit = function(){
   var playerRand = game.getRandomInt(0, game.player.length - 1);
@@ -32,7 +35,12 @@ game.hit = function(){
   $('#playerCardCount').text(this.player.length);
   $('#computerCardCount').text(this.computer.length);
 
+
   game.hit.pointSetter = function(card, cardDiv){
+  /* if(game.fakeTie === false){
+    game.fakeTie = true;
+    return 5;
+  }*/
     var counter = 0;
 
     if(card[0][0] === 'A'){
@@ -77,6 +85,7 @@ game.hit = function(){
     }
     getImg(counter, card, cardDiv);
     return counter;
+
   };
 
   var getImg = function(rank, el, div){
@@ -119,7 +128,8 @@ game.compare = function(pPoints, cPoints){
       game.computer.push(game.playerCard[0]);
       game.computer.push(game.computerCard[0]);
     } else {
-      game.hit.bind(this);
+      game.hit();
+      return;
     }
 
     $('#playerCardCount').text(game.player.length);
