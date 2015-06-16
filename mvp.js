@@ -24,21 +24,62 @@ game.init = function(){
 
 
 game.hit = function(){
-  this.playerCard = this.player.splice(this.getRandomInt(0, this.player.length), 1);
-  this.computerCard = this.computer.splice(this.getRandomInt(0, this.computer.length), 1);
+  var playerRand = game.getRandomInt(0, game.player.length - 1);
+  var computerRand = game.getRandomInt(0, game.computer.length - 1);
+  this.playerCard = game.player.splice(playerRand, 1);
+  this.computerCard = game.computer.splice(computerRand, 1);
   
   $('#playerCardCount').text(this.player.length);
   $('#computerCardCount').text(this.computer.length);
-  $('#playerCard').text(this.playerCard);
-  $('#computerCard').text(this.computerCard);
 
-  var context = this;
-  setTimeout(this.compare, 3000);
-};
+  game.hit.pointSetter = function(card, cardDiv){
+    var counter = 0;
 
-game.compare = function(){
-  
-  var getImg = function(rank, el, div, side){
+    if(card[0][0] === 'A'){
+      counter = 1;
+    }
+    if(card[0][0] === '2'){
+      counter = 2;
+    }
+    if(card[0][0] === '3'){
+      counter = 3;
+    }
+    if(card[0][0] === '4'){
+      counter = 4;
+      } 
+    if(card[0][0] === '5'){
+      counter = 5;
+    }
+    if(card[0][0] === '6'){
+      counter = 6;
+    }
+    if(card[0][0] === '7'){
+      counter = 7;
+    }
+    if(card[0][0] === '8'){
+      counter = 8;
+    }
+    if(card[0][0] === '9'){
+      counter = 9;
+    }
+    if(card[0][0] === '1'){
+      counter = 10;
+    }
+    if(card[0][0] === 'J'){
+      counter = 11;
+    }
+    if(card[0][0] === 'Q'){
+      counter = 12;
+    }
+    if(card[0][0] === 'K'){
+      counter = 13;
+      
+    }
+    getImg(counter, card, cardDiv);
+    return counter;
+  };
+
+  var getImg = function(rank, el, div){
     if(rank === 1)
       rank = 'ace';
     if(rank === 11)
@@ -48,98 +89,51 @@ game.compare = function(){
     if(rank === 13)
       rank = 'king';
 
-    if(el[0][5] === 'S'){
-      $('#playerCard').text('');
-      $('.bottom').append('<img src="img/cards/' + rank + '-' + 'spades.png">');
-    } else if(el[0][5] === 'C'){
-      $('#playerCard').text('');
-      $('.bottom').append('<img src="img/cards/' + rank + '-' + 'clubs.png">');
-    } else if(el[0][5] === 'D'){
-      $('#playerCard').text('');
-      $('.bottom').append('<img src="img/cards/' + rank + '-' + 'diamonds.png">');
-    } else if(el[0][5] === 'H'){
-      $('#playerCard').text('');
-      $('.bottom').append('<img src="img/cards/' + rank + '-' + 'hearts.png">');
+    var i = 5;
+    if(el[0][1] === '0')
+      i = 6;
+
+    if(el[0][i] === 'S'){
+      $(div).append('<img class="cards" src="img/cards/' + rank + '-' + 'spades.png">');
+    } else if(el[0][i] === 'C'){
+      $(div).append('<img class="cards" src="img/cards/' + rank + '-' + 'clubs.png">');
+    } else if(el[0][i] === 'D'){
+      $(div).append('<img class="cards" src="img/cards/' + rank + '-' + 'diamonds.png">');
+    } else if(el[0][i] === 'H'){
+      $(div).append('<img class="cards" src="img/cards/' + rank + '-' + 'hearts.png">');
     }
   };
 
-  var pointSetter = function(card){
-    var counter = 0;
+  var playerPoints = game.hit.pointSetter(game.playerCard, '#playerCard'),
+      computerPoints = game.hit.pointSetter(game.computerCard, '#computerCard');
 
-    if(card[0][0] === 'A'){
-      counter = 1;
-      getImg(counter, card);
-    }
-    if(card[0][0] === '2'){
-      counter = 2;
-      getImg(counter, card);
-    }
-    if(card[0][0] === '3'){
-      counter = 3;
-      getImg(counter, card);
-    }
-    if(card[0][0] === '4'){
-      counter = 4;
-      getImg(counter, card);
-      } 
-    if(card[0][0] === '5'){
-      counter = 5;
-      getImg(counter, card);
-    }
-    if(card[0][0] === '6'){
-      counter = 6;
-      getImg(counter, card);
-    }
-    if(card[0][0] === '7'){
-      counter = 7;
-      getImg(counter, card);
-    }
-    if(card[0][0] === '8'){
-      counter = 8;
-      getImg(counter, card);
-    }
-    if(card[0][0] === '9'){
-      counter = 9;
-      getImg(counter, card);
-    }
-    if(card[0][0] === '1'){
-      counter = 10;
-      getImg(counter, card);
-    }
-    if(card[0][0] === 'J'){
-      counter = 11;
-      getImg(counter, card);
-    }
-    if(card[0][0] === 'Q'){
-      counter = 12;
-      getImg(counter, card);
-    }
-    if(card[0][0] === 'K'){
-      counter = 13;
-      getImg(counter, card);
-    }
-
-    return counter;
- 
+  var context = this;
+  setTimeout(game.compare.bind(this, playerPoints, computerPoints), 3000);
 };
 
-  var playerPoints = pointSetter(game.playerCard),
-      computerPoints = pointSetter(game.computerCard);
-
-    if(playerPoints > computerPoints){
-      game.player.push(this.computerCard.innerHTML, this.playerCard.innerHTML);
-    } else if(computerPoints > playerPoints){
-      game.computer.push(this.playerCard.innerHTML, this.computerCard.innerHTML);
+game.compare = function(pPoints, cPoints){
+    if(pPoints > cPoints){
+      game.player.push(game.computerCard[0]);
+      game.player.push(game.playerCard[0]);
+    } else if(cPoints > pPoints){
+      game.computer.push(game.playerCard[0]);
+      game.computer.push(game.computerCard[0]);
     } else {
-      game.hit();
+      game.hit.bind(this);
     }
 
     $('#playerCardCount').text(game.player.length);
     $('#computerCardCount').text(game.computer.length);
-    $('#playerCard').text('');
-    $('#computerCard').text('');
+    $('.cards').remove();
     console.log('player: ' + game.player.length + '  |  Computer: ' + game.computer.length);
+    console.log(game.player);
+    console.log(game.computer);
+
+
+ 
 };
+
+
 
 
 game.getRandomInt = function(min, max){

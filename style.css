@@ -27,3 +27,11 @@ html, body, {
 #textLeft {
   margin-left: 50px;
 }
+
+.cards {
+  /*display: block;
+  margin-left: auto;
+  margin-right: auto;*/
+  vertical-align: middle;
+  
+}
